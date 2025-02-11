@@ -9,6 +9,8 @@ class User(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    role = db.Column(db.String(50), default='user')  # إضافة حقل الدور (admin أو user)
+    secret_key = db.Column(db.String(16), nullable=True)  # إضافة الحقل لتخزين سر المستخدم
 
     # الطريقة لتشفير كلمة المرور
     def set_password(self, password):
@@ -30,3 +32,10 @@ class Email(db.Model):
 
     sender = db.relationship('User', foreign_keys=[sender_id])
     receiver = db.relationship('User', foreign_keys=[receiver_id])
+
+class Log(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email_id = db.Column(db.Integer, db.ForeignKey('email.id'), nullable=False)
+    timestamp = db.Column(db.DateTime, default=db.func.current_timestamp())  # تاريخ ووقت السجل
+    status = db.Column(db.String(50))  # حالة الإيميل (تم التلاعب أم لا)
+    email = db.relationship('Email', backref=db.backref('logs', lazy=True))
