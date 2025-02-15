@@ -34,6 +34,10 @@ class Email(db.Model):
     hash_status = db.Column(db.String(50), nullable=True) 
     sender = db.relationship('User', foreign_keys=[sender_id])
     receiver = db.relationship('User', foreign_keys=[receiver_id])
+    signature = db.Column(db.String(500))  # إضافة حقل التوقيع
+
+def __repr__(self):
+    return f'<Email {self.id} from {self.sender.email} to {self.receiver.email}>'
 
 class Log(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -41,3 +45,18 @@ class Log(db.Model):
     timestamp = db.Column(db.DateTime, default=db.func.current_timestamp())  # تاريخ ووقت السجل
     status = db.Column(db.String(50))  # حالة الإيميل (تم التلاعب أم لا)
     email = db.relationship('Email', backref=db.backref('logs', lazy=True))
+
+class Notification(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    message = db.Column(db.String(255))
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+    user = db.relationship('User', backref=db.backref('notifications', lazy=True))
+
+class LoginLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # ربط سجل الدخول بالمستخدم
+    user_agent = db.Column(db.String(255))  # نوع المتصفح أو الجهاز
+    ip_address = db.Column(db.String(255))  # عنوان الـ IP
+    login_time = db.Column(db.DateTime, default=db.func.current_timestamp())  # وقت المحاولة
