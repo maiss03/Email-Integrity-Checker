@@ -7,6 +7,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), unique=True, nullable=False)
+    first_name = db.Column(db.String(50), nullable=False, default="Unknown")  # ✅ إضافة اسم أول مع قيمة افتراضية
+    last_name = db.Column(db.String(50), nullable=False, default="User")  # ✅ إضافة اسم أخير مع قيمة افتراضية
     password_hash = db.Column(db.String(200), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     role = db.Column(db.String(50), default='user')  # إضافة حقل الدور (admin أو user)
@@ -28,6 +30,7 @@ class Email(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    subject = db.Column(db.String(255), nullable=False, default="No Subject")  # ✅ إضافة subject
     content = db.Column(db.Text, nullable=False)
     hash = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
