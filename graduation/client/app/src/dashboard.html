@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IntegriMail Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      background-color: #221f3b;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 300px;
+      height: 100vh;
+      background-color: #201c2a;
+      padding: 20px;
+      float: left;
+    }
+
+    .sidebar h2 {
+      color: #00ccff;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #00ccff;
+      text-decoration: none;
+      margin: 15px 0;
+      font-weight: bold;
+    }
+
+    .sidebar a:hover {
+      text-decoration: underline;
+    }
+
+    .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #201c2a;
+    padding: 15px 30px;
+    color: white;
+    border-bottom: 2px solid #0ff;
+    position: relative;
+}
+
+.navbar h3 {
+    margin: 0;
+    font-size: 22px;
+}
+
+
+.navbar .icons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; 
+    gap: 15px;
+}
+
+.navbar .user-circle {
+    order: 1;
+}
+
+.navbar .notification {
+    order: 2;
+}
+
+.navbar .settings {
+    order: 3;
+}
+
+
+.user-circle {
+  width: 40px;
+  height: 40px;
+  background-color: #00ccff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+  color: black;
+  position: relative;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.user-initial {
+  pointer-events: none; 
+}
+
+
+
+
+.notification, .settings {
+  position: relative;
+  cursor: pointer;
+  font-weight: bold;
+  background: none;
+  color: black;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  font-size: 18px;
+}
+
+.user-circle .dropdown {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: #152630;
+    border: 1px solid #0ff;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 100;
+    animation: fadeIn 0.3s ease;
+}
+
+.user-circle:hover .dropdown {
+    display: block;
+}
+
+.dropdown p {
+    margin: 5px 0;
+    color: white;
+}
+
+.dropdown button {
+    background-color: #0ff;
+    color: black;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-top: 5px;
+    border-radius: 3px;
+}
+
+.notification, .settings {
+  position: relative;
+  margin-right: 20px;
+  cursor: pointer;
+  color: white;
+}
+
+.notification .fa-bell {
+  font-size: 20px;
+}
+
+.badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  padding: 3px 6px;
+  border-radius: 50%;
+  background: red;
+  color: white;
+  font-size: 12px;
+}
+
+
+.dropdown {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  background-color: #152630;
+  border: 1px solid #0ff;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  display: none;
+  animation: fadeIn 0.3s ease;
+  min-width: 180px; 
+}
+
+.dropdown a {
+  display: block;
+  color: rgb(255, 255, 255);
+  margin-bottom: 8px;
+  text-decoration: none;
+  font-size: 16px;
+  white-space: nowrap; 
+}
+
+.dropdown a:hover {
+  text-decoration: underline;
+}
+
+.dropdown p {
+  margin: 0 0 5px 0;
+}
+.notification-dropdown {
+    display: none;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background-color: #152630;
+    color: white;
+    border: 1px solid #0ff;
+    border-radius: 5px;
+    width: 250px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    padding: 10px;
+}
+
+.notification-dropdown p {
+    margin: 5px 0;
+    padding: 5px;
+    border-bottom: 1px solid #333;
+    font-size: 14px;
+}
+
+.notification-dropdown p:last-child {
+    border-bottom: none;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+    /* Notifications + Settings */
+.icons {
+  display: flex;
+  flex-direction: row;
+  direction: rtl; 
+  gap: -30px;
+}
+    .icons img {
+      width: 20px;
+      margin-left: 15px;
+      cursor: pointer;
+    }
+
+    .icons span {
+      background-color: red;
+      border-radius: 50%;
+      padding: 2px 5px;
+      font-size: 10px;
+      position: relative;
+      top: -10px;
+      left: -10px;
+    }
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      color: #00ccff !important;
+    }
+    .navbar-brand img {
+      width: 30px;
+      height: 30px;
+      margin-right: 8px;
+    }
+
+    /* Content */
+    .content {
+      margin-left: 250px;
+      padding: 20px;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .stat-box {
+      flex: 1;
+      background-color: #1c1530;
+      margin: 0 10px;
+      padding: 20px;
+      text-align: center;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #00ffff;
+    }
+
+    canvas {
+      background-color: #1c1530;
+      border-radius: 10px;
+    }
+
+    .charts {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    #pieChart {
+    width: 600px !important;
+    height: 400px !important;
+}
+
+
+    .chart-container {
+      flex: 1;
+      margin: 0 10px;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="sidebar">
+    <h2>Dashboard Menu</h2>
+    <a href="dashboard.html">Overview</a>
+            <a href="ComposeEmail.html">Compose Email</a>
+            <a href="inbox.html">Inbox</a>
+            <a href="recent-messages.html">All Mails</a>
+            <a href="alerts.html">Alerts</a>
+            <a href="contact.html">Contact</a>
+           <a href="about.html">About</a>
+           <a href="admin.html" id="adminPanelLink" style="display: none;">Admin Panel</a>
+
+
+  </div>
+
+  <div class="navbar">
+    <a class="navbar-brand" href="#">
+      <img src="assets/images/email-sec-icon.png" alt="Logo">
+      IntegriMail
+    </a>
+    <div class="icons">
+
+      <div class="user-circle" onclick="toggleDropdown()">
+        <div class="user-initial">M</div>
+        <div class="dropdown" id="userDropdown">
+          <p id="userName"></p>
+          <p id="userEmail"></p>
+          <button onclick="logout()">Logout</button>
+        </div>
+      </div>
+      
+      
+  
+
+      <div class="notification" onclick="toggleNotifications(); markNotificationsAsRead();">
+        <i class="fas fa-bell"></i>
+        <span class="badge" id="notification-count">0</span>
+        <div class="notification-dropdown" id="notificationDropdown">
+            <p>No new notifications.</p>
+        </div>
+    </div>
+    
+  
+      <!--settings -->
+      <div class="settings" onclick="toggleSettingsDropdown()">
+        <i class="fas fa-cog"></i>
+        <div class="dropdown" id="settingsDropdown">
+          <a href="reset-password.html">Reset Password</a>
+         
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+  <div class="content">
+    <div class="stats">
+      <div class="stat-box">
+        <h3>Sent Emails</h3>
+        <p id="sentEmails">0</p>
+      </div>
+      <div class="stat-box">
+        <h3>Received Emails</h3>
+        <p id="receivedEmails">0</p>
+      </div>
+      <div class="stat-box">
+        <h3>Total Emails</h3>
+        <p id="totalEmails">0</p>
+      </div>
+      <div class="stat-box">
+        <h3>Tampered Emails</h3>
+        <p id="tamperedEmails">0</p>
+      </div>
+    </div>
+
+    <div class="charts">
+      <div class="chart-container">
+        <canvas id="pieChart"></canvas>
+      </div>
+      <div class="chart-container">
+        <canvas id="barChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script>
+const token = localStorage.getItem("token");
+
+function sanitizeHTML(str) {
+    const temp = document.createElement('div');
+    temp.textContent = str;
+    return temp.innerHTML;
+  }
+  
+
+    document.addEventListener("DOMContentLoaded", function () {
+    
+    if (!token) {
+
+      window.location.replace("login.html");
+    } else {
+
+      loadData();
+      loadUserInfo();
+      fetchNotificationCount();
+    }
+  });
+
+
+    // Toggle dropdown
+    function toggleDropdown() {
+      const dropdown = document.getElementById("userDropdown");
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    }
+
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
+    }
+
+    async function loadData() {
+      try {
+        const response = await fetch("http://127.0.0.1:5000/user/dashboard", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token
+          }
+        });
+
+        const data = await response.json();
+
+        document.getElementById("sentEmails").innerText = sanitizeHTML(data.sent_count);
+        document.getElementById("receivedEmails").innerText = sanitizeHTML(data.inbox_count);
+        document.getElementById("totalEmails").innerText = sanitizeHTML(data.sent_count + data.inbox_count);
+        document.getElementById("tamperedEmails").innerText = sanitizeHTML(data.tampered_count);
+
+        loadCharts(data);
+      } catch (error) {
+        console.error("Error loading data:", error);
+      }
+    }
+
+    function loadCharts(data) {
+  let verified = data.internal_verified_count || 0;
+  let tampered = data.internal_tampered_count || 0;
+  let external = data.external_count || 0;
+
+
+  if (verified === 0 && tampered === 0 && external === 0) {
+    const pieContainer = document.getElementById("pieChart").parentElement;
+    pieContainer.innerHTML = '<p style="color: #888; font-size: 18px; text-align: center;">No email data to display.</p>';
+  } else {
+    const pieData = {
+      labels: ["Internal Verified", "Internal Tampered", "External"],
+      datasets: [{
+        data: [verified, tampered, external],
+        backgroundColor: ["#00ff00", "#ff0000", "#427cce"],
+        borderColor: ["#0ff", "#0ff", "#0ff"],
+        borderWidth: 1
+      }]
+    };
+
+    new Chart(document.getElementById("pieChart"), {
+      type: 'pie',
+      data: pieData,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+  }
+
+
+  const barData = {
+    labels: ['Sent', 'Received'],
+    datasets: []
+  };
+
+  if (data.sent_count > 0 || data.inbox_count > 0) {
+    barData.datasets.push({
+      label: 'Emails per Month',
+      data: [data.sent_count, data.inbox_count],
+      backgroundColor: ['#007bff', '#ffc107']
+    });
+  } else {
+
+    barData.datasets.push({
+      label: 'No Data',
+      data: [0, 0],
+      backgroundColor: ['transparent', 'transparent'],
+      borderColor: ['#444', '#444'],
+      borderWidth: 1
+    });
+  }
+
+  new Chart(document.getElementById("barChart"), {
+  type: 'bar',
+  data: barData,
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: barData.datasets[0].label !== "No Data"
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          precision: 0, 
+          stepSize: 1,  
+          color: '#ccc'
+        },
+        grid: {
+          color: '#333' 
+        }
+      },
+      x: {
+        ticks: {
+          color: '#ccc'
+        },
+        grid: {
+          color: '#333'
+        }
+      }
+    }
+  }
+});
+    }
+
+
+
+    async function loadUserInfo() {
+  try {
+    const response = await fetch("http://127.0.0.1:5000/user_info", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token
+      }
+    });
+
+    const data = await response.json();
+
+
+    document.getElementById("userName").innerText = sanitizeHTML(data.first_name + " " + data.last_name);
+    document.getElementById("userEmail").innerText = sanitizeHTML(data.email);
+
+
+    const firstLetter = data.first_name.charAt(0).toUpperCase();
+    document.querySelector(".user-initial").textContent = firstLetter;
+
+
+    if (data.role === "admin") {
+      const sidebar = document.querySelector(".sidebar");
+      const adminLink = document.createElement("a");
+      adminLink.href = "admin.html";
+      adminLink.textContent = "Admin Panel";
+      sidebar.appendChild(adminLink);
+
+
+      const settingsDropdown = document.getElementById("settingsDropdown");
+      const registerLink = document.createElement("a");
+      registerLink.href = "register.html";
+      registerLink.textContent = "Register User";
+      settingsDropdown.appendChild(registerLink);
+    }
+
+  } catch (error) {
+    console.error("Error loading user info:", error);
+  }
+}
+
+
+    function fetchNotificationCount() {
+    fetch('http://127.0.0.1:5000/notifications', {
+        method: 'GET',
+        headers: {
+            'Authorization': token
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const notifications = data.notifications;
+        const count = notifications.length;
+        document.getElementById('notification-count').textContent = count > 0 ? count : '';
+    })
+    .catch(error => console.error('Error fetching notification count:', error));
+}
+
+    function toggleDropdown() {
+  const dropdown = document.getElementById("userDropdown");
+  dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+}
+
+
+function toggleSettingsDropdown() {
+  const dropdown = document.getElementById("settingsDropdown");
+  dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+}
+
+function toggleNotifications() {
+    const dropdown = document.getElementById('notificationDropdown');
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+
+    if (dropdown.style.display === 'block') {
+        fetch('http://127.0.0.1:5000/notifications', {
+            method: 'GET',
+            headers: {
+                'Authorization': token
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const notifications = data.notifications;
+            const dropdown = document.getElementById('notificationDropdown');
+            dropdown.innerHTML = '';
+
+            if (notifications.length === 0) {
+                dropdown.innerHTML = '<p>No new notifications.</p>';
+            } else {
+                notifications.forEach(notif => {
+                    dropdown.innerHTML += `<p>${sanitizeHTML(notif.message)}</p>`;
+                });
+            }
+        });
+    }
+}
+
+function markNotificationsAsRead() {
+    fetch('http://127.0.0.1:5000/notifications/mark_as_read', {
+        method: 'POST',
+        headers: {
+            'Authorization': token
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Notifications marked as read:', data);
+        document.getElementById('notification-count').textContent = '';
+    })
+    .catch(error => console.error('Error marking notifications as read:', error));
+}
+
+
+
+window.onclick = function(event) {
+  if (!event.target.closest('.user-circle')) {
+    document.getElementById("userDropdown").style.display = "none";
+  }
+  if (!event.target.closest('.notification')) {
+    document.getElementById("notificationDropdown").style.display = "none";
+  }
+  if (!event.target.closest('.settings')) {
+    document.getElementById("settingsDropdown").style.display = "none";
+  }
+}
+
+
+    
+    
+  </script>
+</body>
+</html>

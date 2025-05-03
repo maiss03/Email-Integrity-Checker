@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel | Users Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <head>
+    <style>
+      body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: white;
+        background-color: none;
+      }
+  
+      .video-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        min-width: 100%;
+        min-height: 100%;
+        object-fit: cover;
+        z-index: -1;
+      }
+  
+      .navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #201c2a;
+  padding: 15px 30px;
+  color: white;
+  border-bottom: 2px solid #0ff;
+  position: fixed; 
+  top: 0;
+  left: 250px; 
+  right: 0;
+  z-index: 1000;
+}
+
+.navbar h3 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.navbar-brand {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      color: #00ccff !important;
+    }
+    .navbar-brand img {
+      width: 30px;
+      height: 30px;
+      margin-right: 8px;
+    }
+
+.navbar .icons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; 
+    gap: 15px;
+}
+
+.navbar .user-circle {
+    order: 1;
+}
+
+.navbar .notification {
+    order: 2;
+}
+
+.navbar .settings {
+    order: 3;
+}
+
+
+
+.user-circle {
+  width: 40px;
+  height: 40px;
+  background-color: #00ccff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+  color: black;
+  position: relative;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.user-initial {
+  pointer-events: none; 
+}
+
+
+
+
+.notification, .settings {
+  position: relative;
+  cursor: pointer;
+  font-weight: bold;
+  background: none;
+  color: black;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  font-size: 18px;
+}
+
+.user-circle .dropdown {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: #152630;
+    border: 1px solid #0ff;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 100;
+    animation: fadeIn 0.3s ease;
+}
+
+.user-circle:hover .dropdown {
+    display: block;
+}
+
+.dropdown p {
+    margin: 5px 0;
+    color: white;
+}
+
+.dropdown button {
+    background-color: #0ff;
+    color: black;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-top: 5px;
+    border-radius: 3px;
+}
+
+.notification, .settings {
+  position: relative;
+  margin-right: 20px;
+  cursor: pointer;
+  color: white;
+}
+
+.notification .fa-bell {
+  font-size: 20px;
+}
+
+.badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  padding: 3px 6px;
+  border-radius: 50%;
+  background: red;
+  color: white;
+  font-size: 12px;
+}
+
+
+.dropdown {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  background-color: #152630;
+  border: 1px solid #0ff;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  display: none;
+  animation: fadeIn 0.3s ease;
+  min-width: 180px; 
+}
+
+.dropdown a {
+  display: block;
+  color: rgb(255, 255, 255);
+  margin-bottom: 8px;
+  text-decoration: none;
+  font-size: 16px;
+  white-space: nowrap; 
+}
+
+.dropdown a:hover {
+  text-decoration: underline;
+}
+
+.dropdown p {
+  margin: 0 0 5px 0;
+}
+.notification-dropdown {
+    display: none;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background-color: #152630;
+    color: white;
+    border: 1px solid #0ff;
+    border-radius: 5px;
+    width: 250px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    padding: 10px;
+}
+
+.notification-dropdown p {
+    margin: 5px 0;
+    padding: 5px;
+    border-bottom: 1px solid #333;
+    font-size: 14px;
+}
+
+.notification-dropdown p:last-child {
+    border-bottom: none;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+    /* Notifications + Settings */
+.icons {
+  display: flex;
+  flex-direction: row;
+  direction: rtl;
+  gap: -30px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+  
+      /* Sidebar */
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  background-color: #201c2a;
+  padding: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+}
+
+.sidebar h2 {
+  color: #00ccff;
+}
+
+.sidebar a {
+  display: block;
+  color: #00ccff;
+  text-decoration: none;
+  margin: 15px 0;
+  font-weight: bold;
+}
+
+.sidebar a:hover {
+  text-decoration: underline;
+}
+  
+      .content {
+        margin-left: 250px;
+        padding: 30px;
+        padding-top: 80px;
+      }
+  
+      .card {
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0, 153, 255, 0.3);
+  color: white;
+  margin-bottom: 30px;
+  padding: 20px;
+  max-width: 90%;  
+  margin-left: auto;
+  margin-right: auto;
+  overflow-x: auto;
+}
+
+.card table {
+  width: 100%;
+  min-width: 800px;
+  word-break: break-word;
+}
+
+.table td, .table th {
+  text-align: center;
+  vertical-align: middle;
+  padding: 10px;
+  white-space: nowrap; 
+}
+
+      
+  
+      .btn-action {
+        margin-right: 5px;
+      }
+  
+      .btn-view {
+        padding: 5px 12px;
+        font-size: 14px;
+        background-color: #00ccff;
+        color: black;
+        border: none;
+        border-radius: 5px;
+        box-shadow: 0 0 8px #00ccff;
+        transition: 0.3s;
+      }
+  
+      .btn-view:hover {
+        background-color: #0099cc;
+      }
+
+ 
+
+
+    </style>
+  </head>
+  
+  <body>
+
+    <video autoplay muted loop class="video-bg">
+      <source src="assets/videos/background.mp4" type="video/mp4">
+    </video>
+  
+    <div class="navbar">
+      <a class="navbar-brand" href="#">
+        <img src="assets/images/email-sec-icon.png" alt="Logo">
+        IntegriMail
+      </a>
+      <div class="icons">
+        <div class="user-circle" onclick="toggleDropdown()">
+          <div class="user-initial">M</div>
+          <div class="dropdown" id="userDropdown">
+            <p id="userName">User Name</p>
+            <p id="userEmail">user@email.com</p>
+            <button onclick="logout()">Logout</button>
+          </div>
+        </div>
+        <div class="notification" onclick="toggleNotifications(); markNotificationsAsRead();">
+          <i class="fas fa-bell"></i>
+          <span class="badge" id="notification-count">0</span>
+          <div class="notification-dropdown" id="notificationDropdown">
+            <p>No new notifications.</p>
+          </div>
+        </div>
+        <div class="settings" onclick="toggleSettingsDropdown()">
+          <i class="fas fa-cog"></i>
+          <div class="dropdown" id="settingsDropdown">
+            <a href="reset-password.html">Reset Password</a>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <video autoplay muted loop class="video-bg">
+      <source src="assets/videos/background.mp4" type="video/mp4">
+    </video>
+  
+    <div class="sidebar">
+      <h2>Menu</h2>
+      <a href="dashboard.html">Overview</a>
+      <a href="ComposeEmail.html">Compose Email</a>
+      <a href="inbox.html">Inbox</a>
+      <a href="recent-messages.html">All Mails</a>
+      <a href="alerts.html">Alerts</a>
+      <a href="contact.html">Contact</a>
+      <a href="about.html">About</a>
+    </div>
+  
+
+    <div class="content">
+
+      <div class="card p-4" id="users">
+        <h4 class="mb-3">Active Directory Users</h4>
+        <div style="overflow-x: auto;">
+          <table class="table table-striped table-dark">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="userTableBody">
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+  
+
+      <div class="card p-4" id="emails">
+        <h4 class="mb-3">📬 All Email Logs</h4>
+        <div style="overflow-x: auto;">
+          <table class="table table-striped table-dark">
+            <thead>
+              <tr>
+                <th>From</th>
+                <th>To</th>
+                <th>Subject</th>
+                <th>Status</th>
+                <th>Time</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="emailsTableBody">
+
+            </tbody>
+          </table>
+        </div>
+      
+    
+  </div>
+
+    <!-- ✅ Login Logs -->
+<div class="card p-4" > 
+  <h4 class="mb-3">🔑 Login Logs</h4>
+  <div style="overflow-x: auto;"> 
+    <table id="loginLogTable" class="table table-striped table-dark">
+      <thead>
+        <tr>
+          <th>User Email</th>
+          <th>IP Address</th>
+          <th>User Agent</th>
+          <th>Login Time</th>
+        </tr>
+      </thead>
+      <tbody id="loginLogsTableBody">
+      
+      </tbody>
+    </table>
+  </div> 
+</div>
+
+<!--  Contact Messages -->
+<div class="card p-4 mt-4" id="contactMessages">
+  <h4 class="mb-3">📩 Contact Messages</h4>
+  <div style="overflow-x: auto;">  
+    <table id="contactMessagesTable" class="table table-striped table-dark">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Subject</th>
+          <th>Message</th>
+          <th>Sent At</th>
+          <th>Action</th> 
+
+        </tr>
+      </thead>
+      <tbody id="contactMessagesTableBody">
+        
+      </tbody>
+    </table>
+  </div> 
+</div>
+
+  
+
+  <script>
+
+
+function sanitizeHTML(str) {
+    const temp = document.createElement('div');
+    temp.textContent = str;
+    return temp.innerHTML;
+  }
+  const token = localStorage.getItem("token");
+document.addEventListener("DOMContentLoaded", function () {
+  
+  if (!token) {
+    window.location.replace("login.html");
+  } else {
+
+    fetch("http://127.0.0.1:5000/user_info", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.role !== "admin") {
+
+        window.location.replace("dashboard.html");
+      } else {
+
+        loadUserInfo();
+        fetchNotificationCount();
+        loadUsers();
+        loadAllEmails();
+        loadLoginLogs();
+        loadContactMessages();
+      }
+    })
+    .catch(error => {
+      console.error("Error verifying role:", error);
+      window.location.replace("login.html");
+    });
+  }
+});
+
+    function toggleDropdown() {
+      const dropdown = document.getElementById("userDropdown");
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    }
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
+    }
+    
+    function toggleSettingsDropdown() {
+      const dropdown = document.getElementById("settingsDropdown");
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    }
+
+    function toggleNotifications() {
+      const dropdown = document.getElementById("notificationDropdown");
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+
+      if (dropdown.style.display === "block") {
+        fetch('http://127.0.0.1:5000/notifications', {
+          method: 'GET',
+          headers: { 'Authorization': token }
+        })
+        .then(response => response.json())
+        .then(data => {
+          const notifications = data.notifications;
+          dropdown.innerHTML = notifications.length === 0
+            ? '<p>No new notifications.</p>'
+            : notifications.map(notif => `<p>${sanitizeHTML(notif.message)}</p>`).join('');
+        });
+      }
+    }
+
+    function markNotificationsAsRead() {
+      fetch('http://127.0.0.1:5000/notifications/mark_as_read', {
+        method: 'POST',
+        headers: { 'Authorization': token }
+      })
+      .then(response => response.json())
+      .then(() => document.getElementById('notification-count').textContent = '')
+      .catch(error => console.error('Error:', error));
+    }
+
+async function loadUsers() {
+  try {
+    const response = await fetch("http://127.0.0.1:5000/admin/users", {
+      method: "GET",
+      headers: { "Authorization": token }
+    });
+
+    const data = await response.json();
+    const tableBody = document.getElementById("userTableBody");
+    tableBody.innerHTML = "";
+
+    data.users.forEach(user => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${sanitizeHTML(user.username)}</td>
+        <td>${sanitizeHTML(user.email)}</td>
+        <td>${sanitizeHTML(user.role)}</td>
+        <td>
+          <button class="btn btn-sm btn-danger btn-action" onclick="deleteUser('${user.full_name}')">Delete</button>
+          <button class="btn btn-sm btn-primary btn-action" onclick="toggleRole('${user.username}', '${user.role}')">${user.role === 'admin' ? 'Downgrade' : 'Upgrade'}</button>
+        </td>
+      `;
+      tableBody.appendChild(row);
+    });
+  } catch (err) {
+    console.error("Error loading users:", err);
+  }
+}
+
+async function deleteUser(cn) {
+  if (!confirm(`Are you sure you want to delete '${cn}'?`)) return;
+
+  const response = await fetch("http://127.0.0.1:5000/admin/delete_user", {
+    method: "DELETE",
+    headers: {
+      "Authorization": token,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ cn })
+  });
+
+  const result = await response.json();
+  alert(result.message || result.error);
+  loadUsers();
+}
+
+async function toggleRole(username, role) {
+  const action = role === "admin" ? "downgrade" : "upgrade";
+  const response = await fetch(`http://127.0.0.1:5000/admin/change_role/${username}`, {
+    method: "PUT",
+    headers: {
+      "Authorization": token,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ action })
+  });
+
+  const result = await response.json();
+  alert(result.message || result.error);
+  loadUsers();
+}
+
+async function loadAllEmails() {
+  try {
+    const response = await fetch("http://127.0.0.1:5000/admin/all_emails", {
+      method: "GET",
+      headers: { "Authorization": token }
+    });
+
+    const data = await response.json();
+    const tableBody = document.getElementById("emailsTableBody");
+    tableBody.innerHTML = "";
+
+    if (data.emails && Array.isArray(data.emails)) {
+      data.emails.forEach(email => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${sanitizeHTML(email.sender_email)}</td>
+          <td>${sanitizeHTML(email.receiver_email)}</td>
+          <td>${sanitizeHTML(email.subject)}</td>
+          <td>${sanitizeHTML(email.hash_status)}</td>
+          <td>${sanitizeHTML(email.created_at || '')}</td>
+          <td>
+            <button class="btn btn-info btn-sm" onclick='viewEmail(${JSON.stringify(email)})'>View</button>
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
+    } else {
+      tableBody.innerHTML = "<tr><td colspan='6' class='text-center'>No emails found.</td></tr>";
+    }
+
+  } catch (err) {
+    console.error("Failed to load email logs:", err);
+  }
+}
+
+function viewEmail(email) {
+  const url = new URL('view-message.html', window.location.origin);
+
+  url.searchParams.set('from', email.sender_email);
+  url.searchParams.set('to', email.receiver_email);
+  url.searchParams.set('subject', email.subject);
+  url.searchParams.set('date', email.created_at || '');
+  url.searchParams.set('status', email.hash_status);
+  url.searchParams.set('content', email.content);
+  url.searchParams.set('source', 'admin');
+
+  window.location.href = url.href;
+}
+
+async function loadLoginLogs() {
+  try {
+    const response = await fetch("http://127.0.0.1:5000/admin/login_logs", {
+      method: "GET",
+      headers: { "Authorization": token }
+    });
+
+    const data = await response.json();
+    const tableBody = document.getElementById("loginLogsTableBody");
+    tableBody.innerHTML = "";
+
+    if (data.logs && Array.isArray(data.logs)) {
+      data.logs.forEach(log => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${sanitizeHTML(log.user_email)}</td>
+          <td>${sanitizeHTML(log.ip_address)}</td>
+          <td class="user-agent-column" title="${sanitizeHTML(log.user_agent)}">${sanitizeHTML(log.user_agent.slice(0, 30))}...</td>
+          <td>${log.login_time}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+    } else {
+      tableBody.innerHTML = "<tr><td colspan='4' class='text-center'>No logs found.</td></tr>";
+    }
+  } catch (err) {
+    console.error("Failed to load login logs:", err);
+  }
+}
+async function loadContactMessages() {
+  fetch('http://127.0.0.1:5000/admin/contact_messages', { 
+    method: 'GET',
+    headers: { "Authorization": token }
+
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Failed to load messages. Unauthorized or server error.');
+    }
+    return response.json();
+  })
+  .then(data => {
+    const tableBody = document.getElementById('contactMessagesTableBody');
+    tableBody.innerHTML = '';
+
+    data.messages.forEach(message => {
+      const row = document.createElement('tr');
+      row.id = `message-${message.id}`;
+
+      row.innerHTML = `
+        <td>${sanitizeHTML(message.name)}</td> 
+        <td>${sanitizeHTML(message.email)}</td>
+        <td>${sanitizeHTML(message.subject)}</td>
+        <td>${sanitizeHTML(message.message)}</td>
+        <td>${sanitizeHTML(message.created_at)}</td>
+        <td>
+          ${message.is_handled ? 
+            '<span>Done</span>' : 
+            `<button onclick="markAsDone(${message.id})" class="btn btn-success btn-sm">Mark as Done ✅</button>`
+          }
+        </td>
+      `;
+
+      tableBody.appendChild(row);
+    });
+  })
+  .catch(error => {
+    console.error('Error loading contact messages:', error);
+  });
+}
+
+function markAsDone(messageId) {
+  fetch(`http://127.0.0.1:5000/admin/contact/mark_done/${messageId}`, { 
+    method: 'POST',
+    headers: { "Authorization": token }
+
+  })
+  .then(response => {
+    if (response.ok) {
+      document.getElementById(`message-${messageId}`).remove();
+    } else {
+      alert('Failed to mark the message as done.');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('An error occurred while marking as done.');
+  });
+}
+
+
+async function loadUserInfo() {
+  try {
+    const response = await fetch("http://127.0.0.1:5000/user_info", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token
+      }
+    });
+
+    const data = await response.json();
+
+
+    document.getElementById("userName").innerText = sanitizeHTML(data.first_name + " " + data.last_name);
+    document.getElementById("userEmail").innerText = sanitizeHTML(data.email);
+
+
+    const firstLetter = data.first_name.charAt(0).toUpperCase();
+    document.querySelector(".user-initial").textContent = firstLetter;
+
+
+    if (data.role === "admin") {
+      const sidebar = document.querySelector(".sidebar");
+      const adminLink = document.createElement("a");
+      adminLink.href = "admin.html";
+      adminLink.textContent = "Admin Panel";
+      sidebar.appendChild(adminLink);
+
+
+      const settingsDropdown = document.getElementById("settingsDropdown");
+      const registerLink = document.createElement("a");
+      registerLink.href = "register.html";
+      registerLink.textContent = "Register User";
+      settingsDropdown.appendChild(registerLink);
+    }
+
+  } catch (error) {
+    console.error("Error loading user info:", error);
+  }
+}
+
+
+
+    function fetchNotificationCount() {
+      fetch('http://127.0.0.1:5000/notifications', {
+        method: 'GET',
+        headers: { 'Authorization': token }
+      })
+      .then(response => response.json())
+      .then(data => {
+        const count = data.notifications.length;
+        document.getElementById('notification-count').textContent = count > 0 ? count : '';
+      })
+      .catch(error => console.error('Error fetching notification count:', error));
+    }
+
+
+    </script>
+    
+  
+    
+</body>
+</html>

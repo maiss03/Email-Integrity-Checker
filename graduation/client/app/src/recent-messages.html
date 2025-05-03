@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Recent Messages | IntegriMail</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #121212;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: white;
+    }
+
+    .video-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    /* Sidebar */
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  background-color: #201c2a;
+  padding: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+}
+
+.sidebar h2 {
+  color: #00ccff;
+}
+
+.sidebar a {
+  display: block;
+  color: #00ccff;
+  text-decoration: none;
+  margin: 15px 0;
+  font-weight: bold;
+}
+
+.sidebar a:hover {
+  text-decoration: underline;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #201c2a;
+  padding: 15px 30px;
+  color: white;
+  border-bottom: 2px solid #0ff;
+  position: fixed; 
+  top: 0;
+  left: 250px; 
+  right: 0;
+  z-index: 1000;
+}
+
+.navbar h3 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.navbar-brand {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      color: #00ccff !important;
+    }
+    .navbar-brand img {
+      width: 30px;
+      height: 30px;
+      margin-right: 8px;
+    }
+
+.navbar .icons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; 
+    gap: 15px;
+}
+
+.navbar .user-circle {
+    order: 1;
+}
+
+.navbar .notification {
+    order: 2;
+}
+
+.navbar .settings {
+    order: 3;
+}
+
+
+
+.user-circle {
+  width: 40px;
+  height: 40px;
+  background-color: #00ccff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+  color: black;
+  position: relative;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.user-initial {
+  pointer-events: none; 
+}
+
+
+
+
+.notification, .settings {
+  position: relative;
+  cursor: pointer;
+  font-weight: bold;
+  background: none;
+  color: black;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  font-size: 18px;
+}
+
+.user-circle .dropdown {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: #152630;
+    border: 1px solid #0ff;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 100;
+    animation: fadeIn 0.3s ease;
+}
+
+.user-circle:hover .dropdown {
+    display: block;
+}
+
+.dropdown p {
+    margin: 5px 0;
+    color: white;
+}
+
+.dropdown button {
+    background-color: #0ff;
+    color: black;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-top: 5px;
+    border-radius: 3px;
+}
+
+.notification, .settings {
+  position: relative;
+  margin-right: 20px;
+  cursor: pointer;
+  color: white;
+}
+
+.notification .fa-bell {
+  font-size: 20px;
+}
+
+.badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  padding: 3px 6px;
+  border-radius: 50%;
+  background: red;
+  color: white;
+  font-size: 12px;
+}
+
+
+.dropdown {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  background-color: #152630;
+  border: 1px solid #0ff;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  display: none;
+  animation: fadeIn 0.3s ease;
+  min-width: 180px; 
+}
+
+.dropdown a {
+  display: block;
+  color: rgb(255, 255, 255);
+  margin-bottom: 8px;
+  text-decoration: none;
+  font-size: 16px;
+  white-space: nowrap; 
+}
+
+.dropdown a:hover {
+  text-decoration: underline;
+}
+
+.dropdown p {
+  margin: 0 0 5px 0;
+}
+.notification-dropdown {
+    display: none;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background-color: #152630;
+    color: white;
+    border: 1px solid #0ff;
+    border-radius: 5px;
+    width: 250px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    padding: 10px;
+}
+
+.notification-dropdown p {
+    margin: 5px 0;
+    padding: 5px;
+    border-bottom: 1px solid #333;
+    font-size: 14px;
+}
+
+.notification-dropdown p:last-child {
+    border-bottom: none;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+    /* Notifications + Settings */
+.icons {
+  display: flex;
+  flex-direction: row;
+  direction: rtl; 
+  gap: -30px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.table-container {
+  margin: 80px auto;
+  max-width: 95%;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(0, 204, 255, 0.3);
+  
+
+  margin-left: 270px; 
+}
+
+
+table {
+  border-spacing: 0;
+  width: 100%;
+  table-layout: auto;
+}
+
+
+table th, table td {
+  padding: 8px 12px; 
+  font-size: 14px; 
+  white-space: nowrap; 
+}
+
+    table {
+      color: white;
+    }
+
+    thead {
+      color: #00ccff;
+    }
+
+    .verified {
+      color: #00ff99;
+      font-weight: bold;
+      text-shadow: 0 0 8px #00ff99;
+    }
+
+    .tampered {
+      color: #ff4d4d;
+      font-weight: bold;
+      animation: shake 0.6s infinite alternate;
+    }
+    @media (max-width: 992px) {
+  .table-container {
+    margin-left: 0;
+  }
+}
+
+    @keyframes shake {
+      0% { transform: translateX(0px); }
+      100% { transform: translateX(2px); }
+    }
+
+    .btn-view {
+      padding: 4px 12px;
+      font-size: 0.9rem;
+      border-radius: 5px;
+      color: #00ccff;
+      border: 1px solid #00ccff;
+      background-color: transparent;
+      transition: 0.3s;
+    }
+
+    .btn-view:hover {
+      background-color: #00ccff;
+      color: #000;
+      box-shadow: 0 0 8px #00ccff;
+    }
+
+    .filters, .search-box {
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .filters button {
+      margin: 5px;
+    }
+
+    input[type="text"] {
+      max-width: 400px;
+      margin: 10px auto;
+    }
+
+    .spinner-border {
+      width: 3rem;
+      height: 3rem;
+    }
+
+    /* Fade animation */
+    @keyframes fadeInRow {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+
+  </style>
+</head>
+<body>
+
+  <!-- Background Video -->
+  <video autoplay muted loop class="video-bg">
+    <source src="assets/videos/background.mp4" type="video/mp4">
+  </video>
+
+  <div class="sidebar">
+    <h2>Menu</h2>
+    <a href="dashboard.html">Overview</a>
+            <a href="ComposeEmail.html">Compose Email</a>
+            <a href="inbox.html">Inbox</a>
+            <a href="recent-messages.html">All Mails</a>
+            <a href="alerts.html">Alerts</a>
+            <a href="contact.html">Contact</a>
+           <a href="about.html">About</a>
+
+  </div>
+
+  <div class="navbar">
+    <a class="navbar-brand" href="#">
+      <img src="assets/images/email-sec-icon.png" alt="Logo">
+      IntegriMail
+    </a>
+    <div class="icons">
+
+      <div class="user-circle" onclick="toggleDropdown()">
+        <div class="user-initial">M</div>
+        <div class="dropdown" id="userDropdown">
+          <p id="userName">User Name</p>
+          <p id="userEmail">user@email.com</p>
+          <button onclick="logout()">Logout</button>
+        </div>
+      </div>
+      
+      
+  
+
+      <div class="notification" onclick="toggleNotifications(); markNotificationsAsRead();">
+        <i class="fas fa-bell"></i>
+        <span class="badge" id="notification-count">0</span>
+        <div class="notification-dropdown" id="notificationDropdown">
+            <p>No new notifications.</p>
+        </div>
+    </div>
+    
+  
+      <!-- settings -->
+      <div class="settings" onclick="toggleSettingsDropdown()">
+        <i class="fas fa-cog"></i>
+        <div class="dropdown" id="settingsDropdown">
+          <a href="reset-password.html">Reset Password</a>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Messages Table -->
+  <div class="table-container">
+    <h2 class="text-center mb-4" style="color: #00ccff;">📧 All Messages</h2>
+
+    <!-- Filters -->
+    <div class="filters">
+      <button class="btn btn-outline-light btn-sm" onclick="filterMessages('all')">All</button>
+      <button class="btn btn-outline-success btn-sm" onclick="filterMessages('sent')">📤 Sent</button>
+      <button class="btn btn-outline-primary btn-sm" onclick="filterMessages('received')">📥 Received</button>
+      <button class="btn btn-outline-danger btn-sm" onclick="filterMessages('tampered')">⚠️ Tampered</button>
+    </div>
+
+    <!-- Search -->
+    <div class="search-box text-center">
+      <input type="text" id="searchInput" class="form-control text-center" placeholder="🔍 Search by subject, sender..." onkeyup="searchMessages()" />
+    </div>
+
+    <!-- Loader -->
+    <div class="text-center my-3" id="loader">
+      <div class="spinner-border text-info" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="table table-dark table-hover text-center align-middle" id="messagesTable">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Subject</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Dynamic Content -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Script -->
+  <script>
+
+    function sanitizeHTML(str) {
+  const temp = document.createElement("div");
+  temp.textContent = str;
+  return temp.innerHTML;
+}
+
+const token = localStorage.getItem("token");
+
+document.addEventListener("DOMContentLoaded", function () {
+    
+
+    if (!token) {
+
+      window.location.replace("login.html");
+    } else {
+      loadUserInfo();
+    fetchNotificationCount();
+    fetchEmails();
+    }
+  });
+
+// Toggle dropdown
+function toggleDropdown() {
+  const dropdown = document.getElementById("userDropdown");
+  dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+}
+function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
+    }
+    let allEmails = [];
+  
+    document.getElementById('loader').style.display = 'block';
+  
+    async function fetchEmails() {
+      try {
+        const [inboxResponse, sentResponse] = await Promise.all([
+          fetch("http://127.0.0.1:5000/inbox", { headers: { Authorization: token } }),
+          fetch("http://127.0.0.1:5000/sent_emails", { headers: { Authorization: token } })
+        ]);
+  
+        const inboxData = await inboxResponse.json();
+        const sentData = await sentResponse.json();
+  
+        const inboxEmails = inboxData.inbox.map(email => ({ ...email, type: 'received' }));
+        const sentEmails = sentData.sent_emails.map(email => ({ ...email, type: 'sent' }));
+  
+        allEmails = [...inboxEmails, ...sentEmails];
+        allEmails.sort((a, b) => new Date(b.received_at || b.created_at) - new Date(a.received_at || a.created_at));
+  
+        displayEmails(allEmails);
+  
+      } catch (error) {
+        console.error("Error fetching emails:", error);
+      } finally {
+        document.getElementById('loader').style.display = 'none';
+      }
+    }
+  
+    function displayEmails(emails) {
+      const tableBody = document.querySelector('#messagesTable tbody');
+      tableBody.innerHTML = "";
+  
+      emails.forEach(email => {
+        const row = document.createElement('tr');
+        row.setAttribute('data-type', email.type);
+        row.setAttribute('data-status', email.integrity === "Tampered" ? "tampered" : "verified");
+  
+
+        const viewLink = `view-message.html?from=${encodeURIComponent(email.from || localStorage.getItem('userEmail'))}&to=${encodeURIComponent(email.to || localStorage.getItem('userEmail'))}&subject=${encodeURIComponent(email.subject)}&date=${encodeURIComponent(email.received_at || email.created_at)}&status=${encodeURIComponent(email.integrity)}&content=${encodeURIComponent(email.content)}&source=recent`;
+  
+        row.innerHTML = `
+          <td>${email.type === "sent" ? "📤 Sent" : "📥 Received"}</td>
+          <td>${sanitizeHTML(email.from || localStorage.getItem('userEmail'))}</td>
+          <td>${sanitizeHTML(email.to || localStorage.getItem('userEmail'))}</td>
+          <td>${sanitizeHTML(email.subject)}</td>
+          <td>${sanitizeHTML(email.received_at || email.created_at)}</td>
+          <td class="${
+  email.from.includes('emailchecker4u.com') && email.to.includes('emailchecker4u.com')
+    ? (email.integrity === "Tampered" ? "tampered" : "verified")
+    : "external"
+}">
+  ${
+    email.from.includes('emailchecker4u.com') && email.to.includes('emailchecker4u.com')
+      ? (email.integrity === "Tampered" ? "⚠️ Tampered" : "✅ Verified")
+      : "🌐 External"
+  }
+</td>
+
+          <td>
+            <a href="${viewLink}" class="btn-view" data-bs-toggle="tooltip" title="View full message">View</a>
+          </td>
+        `;
+  
+        row.style.animation = "fadeInRow 0.5s ease forwards";
+        tableBody.appendChild(row);
+      });
+  
+      // Tooltips
+      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+    }
+  
+    function filterMessages(type) {
+      const rows = document.querySelectorAll('#messagesTable tbody tr');
+      rows.forEach(row => {
+        const rowType = row.getAttribute('data-type');
+        const rowStatus = row.getAttribute('data-status');
+        if (type === 'all') {
+          row.style.display = '';
+        } else if (type === 'tampered') {
+          row.style.display = rowStatus === 'tampered' ? '' : 'none';
+        } else {
+          row.style.display = rowType === type ? '' : 'none';
+        }
+      });
+    }
+  
+    function searchMessages() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const rows = document.querySelectorAll('#messagesTable tbody tr');
+      rows.forEach(row => {
+        const rowText = row.innerText.toLowerCase();
+        row.style.display = rowText.includes(input) ? '' : 'none';
+      });
+    }
+  
+    async function loadUserInfo() {
+  try {
+    const response = await fetch("http://127.0.0.1:5000/user_info", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token
+      }
+    });
+
+    const data = await response.json();
+
+
+    document.getElementById("userName").innerText = data.first_name + " " + data.last_name;
+    document.getElementById("userEmail").innerText = data.email;
+
+
+    const firstLetter = data.first_name.charAt(0).toUpperCase();
+    document.querySelector(".user-initial").textContent = firstLetter;
+
+
+    if (data.role === "admin") {
+      const sidebar = document.querySelector(".sidebar");
+      const adminLink = document.createElement("a");
+      adminLink.href = "admin.html";
+      adminLink.textContent = "Admin Panel";
+      sidebar.appendChild(adminLink);
+
+
+      const settingsDropdown = document.getElementById("settingsDropdown");
+      const registerLink = document.createElement("a");
+      registerLink.href = "register.html";
+      registerLink.textContent = "Register User";
+      settingsDropdown.appendChild(registerLink);
+    }
+
+  } catch (error) {
+    console.error("Error loading user info:", error);
+  }
+}
+
+
+
+    function fetchNotificationCount() {
+    fetch('http://127.0.0.1:5000/notifications', {
+        method: 'GET',
+        headers: {
+            'Authorization': token
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const notifications = data.notifications;
+        const count = notifications.length;
+        document.getElementById('notification-count').textContent = count > 0 ? count : '';
+    })
+    .catch(error => console.error('Error fetching notification count:', error));
+}
+
+    function toggleDropdown() {
+  const dropdown = document.getElementById("userDropdown");
+  dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+}
+
+
+function toggleSettingsDropdown() {
+  const dropdown = document.getElementById("settingsDropdown");
+  dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+}
+
+function toggleNotifications() {
+    const dropdown = document.getElementById('notificationDropdown');
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+
+    if (dropdown.style.display === 'block') {
+        fetch('http://127.0.0.1:5000/notifications', {
+            method: 'GET',
+            headers: {
+                'Authorization': token
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const notifications = data.notifications;
+            const dropdown = document.getElementById('notificationDropdown');
+            dropdown.innerHTML = '';
+
+            if (notifications.length === 0) {
+                dropdown.innerHTML = '<p>No new notifications.</p>';
+            } else {
+                notifications.forEach(notif => {
+                    dropdown.innerHTML += `<p>${notif.message}</p>`;
+                });
+            }
+        });
+    }
+}
+
+function markNotificationsAsRead() {
+    fetch('http://127.0.0.1:5000/notifications/mark_as_read', {
+        method: 'POST',
+        headers: {
+            'Authorization': token
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Notifications marked as read:', data);
+        document.getElementById('notification-count').textContent = '';
+    })
+    .catch(error => console.error('Error marking notifications as read:', error));
+}
+
+
+
+window.onclick = function(event) {
+  if (!event.target.closest('.user-circle')) {
+    document.getElementById("userDropdown").style.display = "none";
+  }
+  if (!event.target.closest('.notification')) {
+    document.getElementById("notificationDropdown").style.display = "none";
+  }
+  if (!event.target.closest('.settings')) {
+    document.getElementById("settingsDropdown").style.display = "none";
+  }
+}
+
+  
+    
+  </script>
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

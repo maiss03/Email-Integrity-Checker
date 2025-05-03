@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Compose Email | IntegriMail</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: white;
+    }
+
+    .video-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    .navbar {
+      background-color: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 1;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      color: #00ccff !important;
+    }
+
+    .navbar-brand img {
+      width: 30px;
+      height: 30px;
+      margin-right: 8px;
+    }
+
+    .navbar-nav .nav-link {
+      color: white !important;
+      transition: 0.3s ease;
+    }
+
+    .navbar-nav .nav-link:hover {
+      color: #00ccff !important;
+    }
+
+    .form-section {
+      min-height: 100vh;
+      background-color: rgba(0, 0, 0, 0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .form-container {
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 40px;
+      border-radius: 15px;
+      border: 1px solid rgba(0, 153, 255, 0.3);
+      box-shadow: 0 0 10px rgba(0, 153, 255, 0.2);
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .form-control {
+      background-color: transparent;
+      border: 2px solid #0099ff;
+      color: white;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .form-control::placeholder {
+      color: #aaa;
+    }
+
+    .form-control:focus {
+      box-shadow: 0 0 10px #0099ff;
+      border-color: #00ccff;
+      background-color: transparent;
+    }
+
+    .btn-neon {
+      background-color: #00ccff;
+      color: black;
+      font-weight: bold;
+      border: none;
+      box-shadow: 0 0 10px #00ccff, 0 0 20px #00ccff;
+      transition: 0.3s ease;
+      width: 100%;
+    }
+
+    .btn-neon:hover {
+      background-color: #007acc;
+      box-shadow: 0 0 15px #00ccff, 0 0 25px #00ccff;
+    }
+
+    h2 {
+      color: #00ccff;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background-color: #201c2a;
+      padding: 20px;
+      float: left;
+    }
+
+    .sidebar h2 {
+      color: #00ccff;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #00ccff;
+      text-decoration: none;
+      margin: 15px 0;
+      font-weight: bold;
+    }
+
+    .sidebar a:hover {
+      text-decoration: underline;
+    }
+
+    .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #201c2a;
+    padding: 15px 30px;
+    color: white;
+    border-bottom: 2px solid #0ff;
+    position: relative;
+}
+
+.navbar h3 {
+    margin: 0;
+    font-size: 22px;
+}
+
+
+.navbar .icons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;  
+    gap: 15px;
+}
+
+.navbar .user-circle {
+    order: 1;
+}
+
+.navbar .notification {
+    order: 2;
+}
+
+.navbar .settings {
+    order: 3;
+}
+
+
+.user-circle {
+  width: 40px;
+  height: 40px;
+  background-color: #00ccff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+  color: black;
+  position: relative;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.user-initial {
+  pointer-events: none; 
+}
+
+
+
+
+.notification, .settings {
+  position: relative;
+  cursor: pointer;
+  font-weight: bold;
+  background: none;
+  color: black;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  font-size: 18px;
+}
+
+.user-circle .dropdown {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: #152630;
+    border: 1px solid #0ff;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 100;
+    animation: fadeIn 0.3s ease;
+}
+
+.user-circle:hover .dropdown {
+    display: block;
+}
+
+.dropdown p {
+    margin: 5px 0;
+    color: white;
+}
+
+.dropdown button {
+    background-color: #0ff;
+    color: black;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-top: 5px;
+    border-radius: 3px;
+}
+
+.notification, .settings {
+  position: relative;
+  margin-right: 20px;
+  cursor: pointer;
+  color: white;
+}
+
+.notification .fa-bell {
+  font-size: 20px;
+}
+
+.badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  padding: 3px 6px;
+  border-radius: 50%;
+  background: red;
+  color: white;
+  font-size: 12px;
+}
+
+
+.dropdown {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  background-color: #152630;
+  border: 1px solid #0ff;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  display: none;
+  animation: fadeIn 0.3s ease;
+  min-width: 180px; 
+}
+
+.dropdown a {
+  display: block;
+  color: rgb(255, 255, 255);
+  margin-bottom: 8px;
+  text-decoration: none;
+  font-size: 16px;
+  white-space: nowrap; 
+}
+
+.dropdown a:hover {
+  text-decoration: underline;
+}
+
+.dropdown p {
+  margin: 0 0 5px 0;
+}
+.notification-dropdown {
+    display: none;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background-color: #152630;
+    color: white;
+    border: 1px solid #0ff;
+    border-radius: 5px;
+    width: 250px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    padding: 10px;
+}
+
+.notification-dropdown p {
+    margin: 5px 0;
+    padding: 5px;
+    border-bottom: 1px solid #333;
+    font-size: 14px;
+}
+
+.notification-dropdown p:last-child {
+    border-bottom: none;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+    /* Notifications + Settings */
+.icons {
+  display: flex;
+  flex-direction: row;
+  direction: rtl; 
+  gap: -30px;
+}
+  </style>
+</head>
+<body>
+
+  <!-- Background Video -->
+  <video autoplay muted loop class="video-bg">
+    <source src="assets/videos/background.mp4" type="video/mp4">
+  </video>
+
+  <div class="sidebar">
+    <h2>Menu</h2>
+    <a href="dashboard.html">Overview</a>
+            <a href="ComposeEmail.html">Compose Email</a>
+            <a href="inbox.html">Inbox</a>
+            <a href="recent-messages.html">All Mails</a>
+            <a href="alerts.html">Alerts</a>
+            <a href="contact.html">Contact</a>
+           <a href="about.html">About</a>
+           
+
+  </div>
+
+  <div class="navbar">
+    <a class="navbar-brand" href="#">
+      <img src="assets/images/email-sec-icon.png" alt="Logo">
+      IntegriMail
+    </a>
+    <div class="icons">
+
+      <div class="user-circle" onclick="toggleDropdown()">
+        <div class="user-initial">u</div>
+        <div class="dropdown" id="userDropdown">
+          <p id="userName">User Name</p>
+          <p id="userEmail">user@email.com</p>
+          <button onclick="logout()">Logout</button>
+        </div>
+      </div>
+      
+      
+  
+
+      <div class="notification" onclick="toggleNotifications(); markNotificationsAsRead();">
+        <i class="fas fa-bell"></i>
+        <span class="badge" id="notification-count">0</span>
+        <div class="notification-dropdown" id="notificationDropdown">
+            <p>No new notifications.</p>
+        </div>
+    </div>
+    
+  
+      <!-- settings -->
+      <div class="settings" onclick="toggleSettingsDropdown()">
+        <i class="fas fa-cog"></i>
+        <div class="dropdown" id="settingsDropdown">
+          <a href="reset-password.html">Reset Password</a>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+  <!-- Compose Email Section -->
+  <div class="form-section">
+    <div class="form-container">
+      <h2>✉️ Compose Email</h2>
+      <form>
+        <input type="email" class="form-control" placeholder="To" required />
+        <input type="text" class="form-control" placeholder="Subject" required />
+        <textarea class="form-control" rows="6" placeholder="Write your message here..." required></textarea>
+        <button type="submit" class="btn btn-neon mt-3">Send Email</button>
+      </form>
+    </div>
+  </div>
+  <script>
+
+function sanitizeHTML(str) {
+  const temp = document.createElement("div");
+  temp.textContent = str;
+  return temp.innerHTML;
+}
+const token = localStorage.getItem("token");
+    document.addEventListener("DOMContentLoaded", function () {
+    
+
+    if (!token) {
+
+      window.location.replace("login.html");
+    } else {
+      
+      loadUserInfo();
+    fetchNotificationCount();
+
+    }
+  });
+
+
+    // Toggle dropdown
+    function toggleDropdown() {
+      const dropdown = document.getElementById("userDropdown");
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    }
+
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
+    }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form");
+    const button = form.querySelector("button");
+    const feedback = document.createElement("div");
+    feedback.style.marginTop = "15px";
+    form.appendChild(feedback);
+
+
+    const inputs = form.querySelectorAll(".form-control");
+    inputs.forEach(input => {
+      input.style.color = "white";
+      input.addEventListener("focus", () => input.style.color = "white");
+      input.addEventListener("blur", () => input.style.color = "white");
+    });
+
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        showFeedback("❌ Please login first!", "danger");
+        return;
+      }
+
+      const receiverEmail = form.querySelector('input[type="email"]').value;
+      const subject = form.querySelector('input[type="text"]').value;
+      const content = form.querySelector('textarea').value;
+
+      // Show loading state
+      button.disabled = true;
+      button.innerHTML = 'Sending...';
+
+      try {
+        const response = await fetch("http://127.0.0.1:5000/send_email", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token
+          },
+          body: JSON.stringify({
+            receiver_email: receiverEmail,
+            subject: subject,
+            content: content
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showFeedback("✅ Email sent successfully!", "success");
+          form.reset(); // Clear the form
+        } else {
+          showFeedback("❌ Failed to send email: " + data.error, "danger");
+        }
+
+      } catch (error) {
+        console.error("Error sending email:", error);
+        showFeedback("❌ An error occurred while sending the email.", "danger");
+      }
+
+      // Reset button state
+      button.disabled = false;
+      button.innerHTML = 'Send Email';
+    });
+
+    function showFeedback(message, type) {
+      feedback.innerHTML = `<div class="alert alert-${type}" role="alert">${sanitizeHTML(message)}</div>`;
+      setTimeout(() => {
+        feedback.innerHTML = "";
+      }, 3000); 
+    }
+  });
+
+
+
+  async function loadUserInfo() {
+  try {
+    const response = await fetch("http://127.0.0.1:5000/user_info", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token
+      }
+    });
+
+    const data = await response.json();
+
+
+    document.getElementById("userName").innerText = sanitizeHTML(data.first_name + " " + data.last_name);
+    document.getElementById("userEmail").innerText = sanitizeHTML(data.email);
+
+
+    const firstLetter = data.first_name.charAt(0).toUpperCase();
+    document.querySelector(".user-initial").textContent = firstLetter;
+
+
+    if (data.role === "admin") {
+      const sidebar = document.querySelector(".sidebar");
+      const adminLink = document.createElement("a");
+      adminLink.href = "admin.html";
+      adminLink.textContent = "Admin Panel";
+      sidebar.appendChild(adminLink);
+
+
+      const settingsDropdown = document.getElementById("settingsDropdown");
+      const registerLink = document.createElement("a");
+      registerLink.href = "register.html";
+      registerLink.textContent = "Register User";
+      settingsDropdown.appendChild(registerLink);
+    }
+
+  } catch (error) {
+    console.error("Error loading user info:", error);
+  }
+}
+
+
+    function fetchNotificationCount() {
+    fetch('http://127.0.0.1:5000/notifications', {
+        method: 'GET',
+        headers: {
+            'Authorization': token
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const notifications = data.notifications;
+        const count = notifications.length;
+        document.getElementById('notification-count').textContent = count > 0 ? count : '';
+    })
+    .catch(error => console.error('Error fetching notification count:', error));
+}
+
+    function toggleDropdown() {
+  const dropdown = document.getElementById("userDropdown");
+  dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+}
+
+
+function toggleSettingsDropdown() {
+  const dropdown = document.getElementById("settingsDropdown");
+  dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+}
+
+function toggleNotifications() {
+    const dropdown = document.getElementById('notificationDropdown');
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+
+    if (dropdown.style.display === 'block') {
+        fetch('http://127.0.0.1:5000/notifications', {
+            method: 'GET',
+            headers: {
+                'Authorization': token
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const notifications = data.notifications;
+            const dropdown = document.getElementById('notificationDropdown');
+            dropdown.innerHTML = '';
+
+            if (notifications.length === 0) {
+                dropdown.innerHTML = '<p>No new notifications.</p>';
+            } else {
+                notifications.forEach(notif => {
+                    dropdown.innerHTML += `<p>${sanitizeHTML(notif.message)}</p>`;
+                });
+            }
+        });
+    }
+}
+
+function markNotificationsAsRead() {
+    fetch('http://127.0.0.1:5000/notifications/mark_as_read', {
+        method: 'POST',
+        headers: {
+            'Authorization': token
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Notifications marked as read:', data);
+        document.getElementById('notification-count').textContent = '';
+    })
+    .catch(error => console.error('Error marking notifications as read:', error));
+}
+
+
+
+window.onclick = function(event) {
+  if (!event.target.closest('.user-circle')) {
+    document.getElementById("userDropdown").style.display = "none";
+  }
+  if (!event.target.closest('.notification')) {
+    document.getElementById("notificationDropdown").style.display = "none";
+  }
+  if (!event.target.closest('.settings')) {
+    document.getElementById("settingsDropdown").style.display = "none";
+  }
+}
+
+    
+  </script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

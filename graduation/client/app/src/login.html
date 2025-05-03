@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login | IntegriMail</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: white;
+    }
+
+    .video-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    .navbar {
+      background-color: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 1;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      color: #0099ff !important;
+      transition: color 0.3s ease;
+    }
+
+    .navbar-brand:hover {
+      color: #00ccff !important;
+    }
+
+    .navbar-brand img {
+      width: 30px;
+      height: 30px;
+      margin-right: 8px;
+    }
+
+    .form-section {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 10px 20px 20px;
+      text-align: center;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .form-container {
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 40px;
+      border-radius: 15px;
+      border: 1px solid rgba(0, 153, 255, 0.3);
+      box-shadow: 0 0 10px rgba(0, 153, 255, 0.1);
+      animation: fadeIn 1.5s ease-in-out;
+      max-width: 360px;
+      width: 100%;
+      margin: 30px auto 0;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-control {
+      width: 100%;
+      max-width: 340px;
+      margin: 12px auto;
+      background-color: transparent;
+      border: 2px solid #0099ff;
+      color: white;
+      border-radius: 8px;
+    }
+
+    .form-control::placeholder {
+      color: #aaa;
+    }
+
+    .form-control:focus {
+      background-color: transparent;
+      color: white;
+      box-shadow: 0 0 8px #0099ff;
+      border-color: #0099ff;
+    }
+
+    .btn-neon {
+      background-color: #0099ff;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      box-shadow: 0 0 10px #0099ff, 0 0 20px #0099ff;
+      transition: 0.3s ease;
+      width: 100%;
+      max-width: 340px;
+    }
+
+    .btn-neon:hover {
+      background-color: #007acc;
+      box-shadow: 0 0 15px #0099ff, 0 0 25px #0099ff;
+    }
+
+    .login-link {
+      margin-top: 15px;
+      color: #ccc;
+      font-size: 0.9rem;
+    }
+
+    .login-link a {
+      color: #0099ff;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 60px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <video autoplay muted loop class="video-bg">
+    <source src="assets/videos/background.mp4" type="video/mp4">
+  </video>
+
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img src="assets/images/email-sec-icon.png" alt="Logo">
+        IntegriMail
+      </a>
+      
+      <div class="ml-auto">
+        <a href="landing.html"
+           class="btn font-weight-bold px-4 py-2"
+           style="
+             background-color: #007bff;
+             color: white;
+             border-radius: 25px;
+             font-size: 16px;
+             box-shadow: 0 0 10px #007bff90;
+             transition: all 0.3s ease;
+           "
+           onmouseover="this.style.boxShadow='0 0 15px #007bffcc'"
+           onmouseout="this.style.boxShadow='0 0 10px #007bff90'">
+          🏠 Home
+        </a>
+      </div>
+
+    </div>
+  </nav>
+
+  <div class="form-section">
+    <div class="form-container">
+      <img src="assets/images/email-sec-icon.png" alt="Secure Logo" class="logo-icon" />
+      <h2>Login</h2>
+  
+      <div id="messageBox" class="mb-3 text-center"></div>
+  
+      <div id="loginForm">
+        <input type="text" class="form-control" id="email" placeholder="Username" required />
+        <input type="password" class="form-control" id="password" placeholder="Password" required />
+        <button type="button" class="btn btn-neon mt-2" onclick="submitLogin()">Login</button>
+  
+        <div class="login-link mt-2">
+          <a href="forgot-password.html">Forgot your password?</a>
+        </div>
+        
+      </div>
+  
+      <!-- QR Code Section -->
+      <div id="qrSection" style="display:none; text-align: center; margin-top: 20px;">
+        <p>Scan the QR code with your Authenticator app:</p>
+        <img id="qrCodeImage" src="" alt="QR Code" style="max-width: 200px; margin: auto;" />
+      </div>
+  
+      <!-- 2FA Section -->
+      <div id="twofaSection" style="display:none; margin-top: 20px;">
+        <input type="text" class="form-control" id="twofa" placeholder="Enter 2FA code" required />
+        <button type="button" class="btn btn-neon mt-2" onclick="submit2FA()">Verify</button>
+      </div>
+  
+    </div>
+  </div>
+  
+  <script>
+    let currentEmail = "";
+
+    function sanitizeHTML(str) {
+  const temp = document.createElement('div');
+  temp.textContent = str;
+  return temp.innerHTML;
+}
+
+function showMessage(msg, type = 'info') {
+  const box = document.getElementById("messageBox");
+  box.innerHTML = sanitizeHTML(msg);  
+  box.className = `mb-3 text-${type} text-center`;
+}
+
+
+async function submitLogin() {
+  console.log("🚀 Login clicked!");
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  const response = await fetch("http://127.0.0.1:5000/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+
+  const data = await response.json();
+  console.log("Response from server:", data);
+
+  if (response.ok && data.requires_2fa) {
+    currentEmail = email;
+    showMessage("Enter your 2FA code", "warning");
+
+    if (data.otp_uri) {
+
+      const otpUri = data.otp_uri;
+      const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(otpUri)}&size=200x200`;
+
+      document.getElementById("qrCodeImage").src = qrImageUrl;
+      document.getElementById("qrSection").style.display = "block";
+    } else {
+
+      document.getElementById("qrSection").style.display = "none";
+    }
+
+    document.getElementById("twofaSection").style.display = "block";
+
+  } else if (response.ok && !data.requires_2fa) {
+    showMessage("Login successful!", "success");
+    localStorage.setItem("token", data.token);
+    setTimeout(() => {
+      window.location.href = "dashboard.html";
+    }, 1000);
+  } else {
+    showMessage(data.error || "Login failed", "danger");
+  }
+}
+
+async function submit2FA() {
+  const code = document.getElementById("twofa").value;
+
+  const response = await fetch("http://127.0.0.1:5000/verify_2fa", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: currentEmail, token: code })
+  });
+
+  const data = await response.json();
+
+  if (response.ok && data.token) {
+    showMessage("Login successful!", "success");
+    localStorage.setItem("token", data.token);
+    setTimeout(() => {
+      window.location.href = "dashboard.html";
+    }, 1000);
+  } else {
+    showMessage(data.error || "Invalid 2FA token", "danger");
+  }
+}
+
+  </script>
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
